@@ -12,13 +12,24 @@ function generateRandomSlug(): string {
   return result;
 }
 
+// Ensure URL has proper protocol
+function ensureHttpPrefix(url: string): string {
+  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+    return `https://${url}`;
+  }
+  return url;
+}
+
 export async function shorten(_prevState: any, formData: FormData) {
-  const url = formData.get("url");
-  if (!url || typeof url !== "string") {
+  const rawUrl = formData.get("url");
+  if (!rawUrl || typeof rawUrl !== "string") {
     return {
       shortLink: "Invalid URL",
     };
   }
+  
+  // Ensure URL has proper protocol
+  const url = ensureHttpPrefix(rawUrl);
   
   try {
     // Generate a random 3-letter slug
