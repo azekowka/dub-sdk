@@ -8,6 +8,7 @@ import Link from "next/link";
 import { shorten } from "@/app/actions";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { Copy } from "lucide-react";
 
 type FormState = {
   shortLink: string;
@@ -62,12 +63,26 @@ export default function CardForm() {
         </Button>
       </form>
       {state.shortLink && (
-        <div className="mt-4 p-4 border border-border rounded bg-card">
-          <p className="text-primary text-center">
-            <Link href={state.shortLink} target="_blank">
-              {state.shortLink.replace(/^https?:\/\//, "")}
-            </Link>
-          </p>
+        <div className="mt-4 p-4 border border-border rounded-lg bg-transparent dark:bg-transparent dark:border-gray-800 flex items-center justify-between">
+          <Link 
+            href={state.shortLink} 
+            target="_blank"
+            className="text-primary dark:text-blue-400 overflow-hidden text-ellipsis"
+          >
+            {state.shortLink.replace(/^https?:\/\//, "")}
+          </Link>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => {
+              navigator.clipboard.writeText(state.shortLink);
+              toast.success("Link copied to clipboard!");
+            }}
+            className="h-8 w-8 rounded-full p-0 dark:hover:bg-gray-800 dark:text-gray-300"
+          >
+            <Copy className="h-4 w-4" />
+          </Button>
         </div>
       )}
     </CardContent>

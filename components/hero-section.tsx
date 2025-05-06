@@ -1,12 +1,14 @@
 "use client"
 import React, { useState } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import { ArrowRight, Menu, X, Link2, SendHorizonal, Copy, Check } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { cn } from '@/lib/utils'
 import { shorten } from '@/app/actions'
 import { toast } from 'sonner'
+import { ThemeToggle } from '@/components/ui/theme-toggle'
 
 const transitionVariants = {
     item: {
@@ -81,15 +83,16 @@ export function HeroSection() {
                                 },
                             }}
                             className="absolute inset-0 -z-20">
-                            <img
+                            <Image
                                 src="https://ik.imagekit.io/lrigu76hy/tailark/night-background.jpg?updatedAt=1745733451120"
                                 alt="background"
                                 className="absolute inset-x-0 top-56 -z-20 hidden lg:top-32 dark:block"
-                                width="3276"
-                                height="4095"
+                                width={3276}
+                                height={4095}
+                                priority
                             />
                         </AnimatedGroup>
-                        <div aria-hidden className="absolute inset-0 -z-10 size-full [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]" />
+                        <div aria-hidden className="absolute inset-0 -z-10 size-full dark:bg-black dark:bg-opacity-90 [background:radial-gradient(125%_125%_at_50%_100%,transparent_0%,var(--background)_75%)]" />
                         <div className="mx-auto max-w-7xl px-6">
                             <div className="text-center sm:mx-auto lg:mr-auto lg:mt-0">
                                 <AnimatedGroup variants={transitionVariants}>
@@ -133,97 +136,97 @@ export function HeroSection() {
                                         },
                                         ...transitionVariants,
                                     }}
-                                    className="mt-12 mx-auto max-w-sm">
-                                    <form
-                                        onSubmit={async (e) => {
-                                            e.preventDefault();
-                                            setIsSubmitting(true);
-                                            try {
-                                                const formData = new FormData(e.currentTarget);
-                                                let url = formData.get("url") as string;
-                                                
-                                                // Add https:// prefix if missing
-                                                if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
-                                                    url = `https://${url}`;
-                                                    formData.set("url", url);
-                                                }
-                                                
-                                                const result = await shorten({}, formData);
-                                                if (result?.shortLink) {
-                                                    setShortLink(result.shortLink);
-                                                    toast.success("Link shortened successfully!");
-                                                } else if (result?.error) {
-                                                    toast.error(result.error);
-                                                }
-                                            } catch (error) {
-                                                toast.error("Failed to shorten link");
-                                            } finally {
-                                                setIsSubmitting(false);
-                                            }
-                                        }}
-                                        className="mt-6">
-                                        <div className="bg-background has-[input:focus]:ring-muted relative grid grid-cols-[1fr_auto] pr-3 items-center rounded-[1rem] border shadow shadow-zinc-950/5 has-[input:focus]:ring-2 lg:pr-3">
-                                            <Link2 className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" />
-
-                                            <input
-                                                placeholder="b2a.kz"
-                                                className="h-12 w-full bg-transparent pl-12 focus:outline-none"
-                                                type="text"
-                                                name="url"
-                                                required
-                                                pattern="^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$"
-                                                title="Enter a valid URL (with or without https://)"
-                                            />
-
-                                            <div className="md:pr-1.5 lg:pr-0.5 pr-1.5">
-                                                <Button
-                                                    type="submit"
-                                                    aria-label="shorten"
-                                                    size="sm"
-                                                    disabled={isSubmitting}
-                                                    className="rounded-[0.5rem] ml-0.5">
-                                                    <span className="hidden md:block">
-                                                        {isSubmitting ? "Shortening..." : "Shorten Link"}
-                                                    </span>
-                                                    {!isSubmitting && (
-                                                        <SendHorizonal
-                                                            className="relative mx-auto size-5 md:hidden"
-                                                            strokeWidth={2}
-                                                        />
-                                                    )}
-                                                </Button>
-                                            </div>
-                                        </div>
+                                    className="mt-12 mx-auto max-w-sm"><form
+                                    onSubmit={async (e) => {
+                                      e.preventDefault();
+                                      setIsSubmitting(true);
+                                      try {
+                                        const formData = new FormData(e.currentTarget);
+                                        let url = formData.get("url") as string;
                                         
-                                        {shortLink && (
-                                            <div className="mt-4 p-4 border border-border rounded-lg bg-muted/20 flex items-center justify-between">
-                                                <Link 
-                                                    href={shortLink} 
-                                                    target="_blank"
-                                                    className="text-primary overflow-hidden text-ellipsis"
-                                                >
-                                                    {shortLink.replace(/^https?:\/\//, "")}
-                                                </Link>
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={handleCopy}
-                                                    className="h-8 w-8 rounded-full p-0"
-                                                >
-                                                    {copied ? (
-                                                        <Check className="h-4 w-4" />
-                                                    ) : (
-                                                        <Copy className="h-4 w-4" />
-                                                    )}
-                                                </Button>
-                                            </div>
-                                        )}
-                                    </form>
+                                        if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+                                          url = `https://${url}`;
+                                          formData.set("url", url);
+                                        }
+                                        
+                                        const result = await shorten({}, formData);
+                                        if (result?.shortLink) {
+                                          setShortLink(result.shortLink);
+                                          toast.success("Link shortened successfully!");
+                                        } else if (result?.error) {
+                                          toast.error(result.error);
+                                        }
+                                      } catch (error) {
+                                        toast.error("Failed to shorten link");
+                                      } finally {
+                                        setIsSubmitting(false);
+                                      }
+                                    }}
+                                    className="mt-6"
+                                  >
+                                    <div className="relative grid grid-cols-[1fr_auto] pr-3 items-center rounded-[1rem] border bg-transparent shadow shadow-zinc-950/5 has-[input:focus]:ring-2 has-[input:focus]:ring-muted lg:pr-3">
+                                      <Link2 className="pointer-events-none absolute inset-y-0 left-4 my-auto size-4" />
+                                  
+                                      <input
+                                        placeholder="b2a.kz"
+                                        className="h-12 w-full bg-transparent pl-12 focus:outline-none focus:bg-transparent focus:ring-0 border-none"
+                                        type="text"
+                                        name="url"
+                                        required
+                                        pattern="^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$"
+                                        title="Enter a valid URL (with or without https://)"
+                                      />
+                                  
+                                      <div className="md:pr-1.5 lg:pr-0.5 pr-1.5">
+                                        <Button
+                                          type="submit"
+                                          aria-label="shorten"
+                                          size="sm"
+                                          disabled={isSubmitting}
+                                          className="rounded-[0.5rem] ml-0.5"
+                                        >
+                                          <span className="hidden md:block">
+                                            {isSubmitting ? "Shortening..." : "Shorten Link"}
+                                          </span>
+                                          {!isSubmitting && (
+                                            <SendHorizonal
+                                              className="relative mx-auto size-5 md:hidden"
+                                              strokeWidth={2}
+                                            />
+                                          )}
+                                        </Button>
+                                      </div>
+                                    </div>
+                                    
+                                    {shortLink && (
+                                      <div className="mt-4 p-4 border border-border rounded-lg bg-transparent dark:border-gray-700 flex items-center justify-between">
+                                        <Link 
+                                          href={shortLink} 
+                                          target="_blank"
+                                          className="text-primary dark:text-blue-400 overflow-hidden text-ellipsis hover:no-underline"
+                                        >
+                                          {shortLink.replace(/^https?:\/\//, "")}
+                                        </Link>
+                                        <Button
+                                          type="button"
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={handleCopy}
+                                          className="h-8 w-8 rounded-full p-0 dark:hover:bg-gray-800 dark:text-gray-300"
+                                        >
+                                          {copied ? (
+                                            <Check className="h-4 w-4" />
+                                          ) : (
+                                            <Copy className="h-4 w-4" />
+                                          )}
+                                        </Button>
+                                      </div>
+                                    )}
+                                  </form>
                                 </AnimatedGroup>
                             </div>
                         </div>
-{/*
+
                         <AnimatedGroup
                             variants={{
                                 container: {
@@ -242,23 +245,25 @@ export function HeroSection() {
                                     className="bg-gradient-to-b to-background absolute inset-0 z-10 from-transparent from-35%"
                                 />
                                 <div className="inset-shadow-2xs ring-background dark:inset-shadow-white/20 bg-background relative mx-auto max-w-6xl overflow-hidden rounded-2xl border p-4 shadow-lg shadow-zinc-950/15 ring-1">
-                                    <img
+                                    <Image
                                         className="bg-background aspect-15/8 relative hidden rounded-2xl dark:block"
                                         src="https://tailark.com//_next/image?url=%2Fmail2.png&w=3840&q=75"
                                         alt="app screen"
-                                        width="2700"
-                                        height="1440"
+                                        width={2700}
+                                        height={1440}
+                                        priority
                                     />
-                                    <img
+                                    <Image
                                         className="z-2 border-border/25 aspect-15/8 relative rounded-2xl border dark:hidden"
                                         src="https://tailark.com/_next/image?url=%2Fmail2-light.png&w=3840&q=75"
                                         alt="app screen"
-                                        width="2700"
-                                        height="1440"
+                                        width={2700}
+                                        height={1440}
+                                        priority
                                     />
                                 </div>
                             </div>
-                        </AnimatedGroup> */}
+                        </AnimatedGroup>
                     </div>
                 </section>
             </main>
@@ -363,6 +368,7 @@ const HeroHeader = () => {
                                         <span>Get Started</span>
                                     </Link>
                                 </Button>
+                                <ThemeToggle />
                             </div>
                         </div>
                     </div>
