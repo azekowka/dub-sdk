@@ -12,12 +12,18 @@ function generateRandomSlug(): string {
   return result;
 }
 
-// Ensure URL has proper protocol
-function ensureHttpPrefix(url: string): string {
-  if (!url.startsWith('http://') && !url.startsWith('https://')) {
-    return `https://${url}`;
+// Extract the domain and path for comparison, regardless of protocol
+function getURLWithoutProtocol(url: string): string {
+  return url.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
+}
+
+// Normalize URL for storage
+function normalizeUrl(url: string): string {
+  let normalizedUrl = url;
+  if (!normalizedUrl.startsWith('http://') && !normalizedUrl.startsWith('https://')) {
+    normalizedUrl = `https://${normalizedUrl}`;
   }
-  return url;
+  return normalizedUrl.replace(/\/$/, '');
 }
 
 export async function shorten(_prevState: any, formData: FormData) {
@@ -28,29 +34,47 @@ export async function shorten(_prevState: any, formData: FormData) {
     };
   }
   
-  // Ensure URL has proper protocol
-  const url = ensureHttpPrefix(rawUrl);
+  // Get versions we need to check
+  const urlWithoutProtocol = getURLWithoutProtocol(rawUrl);
+  const normalizedUrl = normalizeUrl(rawUrl);
   
   try {
-    // Generate a random 3-letter slug
+    // Check if ANY version of this URL already exists by checking the domain part
+    const { data: links } = await supabase
+      .from('links')
+      .select('url, slug');
+    
+    // Find any matching link (comparing without protocol)
+    const existingLink = links?.find(link => 
+      getURLWithoutProtocol(link.url) === urlWithoutProtocol
+    );
+    
+    // If the URL already exists in any form, return the existing shortened link
+    if (existingLink) {
+      return {
+        shortLink: `https://dub-sdk.vercel.app/${existingLink.slug}`,
+      };
+    }
+    
+    // If URL doesn't exist, generate a new slug
     let slug = generateRandomSlug();
     
     // Check if slug exists
-    const { data: existingLink } = await supabase
+    const { data: existingSlug } = await supabase
       .from('links')
       .select('slug')
       .eq('slug', slug)
-      .single();
+      .maybeSingle();
       
-    // If slug exists, generate a new one (unlikely but possible)
-    if (existingLink) {
+    // If slug exists, generate a new one
+    if (existingSlug) {
       slug = generateRandomSlug();
     }
     
-    // Insert the new link
+    // Insert the new link with the normalized URL
     const { data, error } = await supabase
       .from('links')
-      .insert([{ url, slug }])
+      .insert([{ url: normalizedUrl, slug }])
       .select()
       .single();
       
