@@ -5,18 +5,22 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { useFormState, useFormStatus } from "react-dom";
 import { shorten } from "@/app/actions";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "sonner";
 
-const initialState = {
-  shortLink: "",
-  error: undefined,
+type FormState = {
+  shortLink: string;
+  error?: string;
+  isSubmitting: boolean;
 };
 
 export default function CardForm() {
-  const [state, formAction] = useFormState(shorten, initialState);
+  const [state, setState] = useState<FormState>({
+    shortLink: "",
+    error: undefined,
+    isSubmitting: false
+  });
 
   useEffect(() => {
     if (state.error) {
@@ -24,20 +28,38 @@ export default function CardForm() {
     }
   }, [state.error]);
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setState(prev => ({ ...prev, isSubmitting: true }));
+    try {
+      const formData = new FormData(e.currentTarget);
+      const result = await shorten({}, formData);
+      setState(prev => ({ ...prev, ...result, isSubmitting: false }));
+    } catch (error) {
+      setState(prev => ({ 
+        ...prev, 
+        error: error instanceof Error ? error.message : "An error occurred",
+        isSubmitting: false 
+      }));
+    }
+  };
+
   return (
     <CardContent className="bg-muted/50">
-      <form className="space-y-4" action={formAction}>
+      <form className="space-y-4" onSubmit={handleSubmit}>
         <div className="space-y-2">
           <Label htmlFor="url">URL</Label>
           <Input
             id="url"
             name="url"
-            placeholder="example.com"
+            placeholder="b2a.kz"
             required
             type="text"
           />
         </div>
-        <SubmitButton />
+        <Button type="submit" className="w-full" aria-disabled={state.isSubmitting}>
+          {state.isSubmitting ? <LoadingCircle /> : "Generate Short Link"}
+        </Button>
       </form>
       {state.shortLink && (
         <div className="mt-4 p-4 border border-border rounded bg-card">
@@ -49,16 +71,6 @@ export default function CardForm() {
         </div>
       )}
     </CardContent>
-  );
-}
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button type="submit" className="w-full" aria-disabled={pending}>
-      {pending ? <LoadingCircle /> : "Generate Short Link"}
-    </Button>
   );
 }
 
