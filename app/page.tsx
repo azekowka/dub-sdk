@@ -1,6 +1,5 @@
 /**
- * v0 by Vercel.
- * @see https://v0.dev/t/ESxmUuVdh7l
+ * Simple URL shortener application
  */
 import {
   CardTitle,
@@ -19,26 +18,9 @@ export default function Page() {
       </div>
       <Card className="w-full max-w-md overflow-hidden shadow-lg border border-border">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-bold">Dublet</CardTitle>
+          <CardTitle className="text-2xl font-bold">URL Shortener</CardTitle>
           <CardDescription>
-            A mini link shortener built with the{" "}
-            <a
-              href="https://d.to/typescript"
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              Dub TypeScript SDK
-            </a>
-            .<br />
-            View the source code on{" "}
-            <a
-              href="https://git.new/dublet"
-              target="_blank"
-              className="text-primary hover:underline"
-            >
-              GitHub
-            </a>
-            .
+            Paste your long URL and get a short, easy-to-share link using dub-sdk.vercel.app
           </CardDescription>
         </CardHeader>
         <CardForm />
