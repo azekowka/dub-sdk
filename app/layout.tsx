@@ -4,6 +4,7 @@ import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/react"
 
 export const runtime = "edge";
 
@@ -26,6 +27,7 @@ export default function RootLayout({
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
             <Toaster />
             {children}
+            <Analytics />
           </ThemeProvider>
         </ClerkProvider>
       </body>
