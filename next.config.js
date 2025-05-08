@@ -16,6 +16,14 @@ const nextConfig = {
         hostname: 'tailark.com'
       }
     ]
+  },
+  // Simple webpack optimization to avoid large string serialization
+  webpack: (config) => {
+    // Disable source maps in production
+    if (process.env.NODE_ENV === 'production') {
+      config.devtool = false;
+    }
+    return config;
   }
 }
 

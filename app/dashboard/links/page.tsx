@@ -78,7 +78,7 @@ export default function LinksPage() {
 
             <div className="border rounded-lg overflow-hidden">
               <div className="p-8 text-center">
-                <h2 className="text-lg font-medium mb-2">You don't have any links yet</h2>
+                <h2 className="text-lg font-medium mb-2">You don&apos;t have any links yet</h2>
                 <p className="text-muted-foreground mb-4">Create your first link to get started</p>
                 <Link href="/dashboard/links/new">
                   <Button className="bg-black text-white hover:bg-black/90">Create Link</Button>
