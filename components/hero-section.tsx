@@ -34,6 +34,7 @@ export function HeroSection() {
     const [shortLink, setShortLink] = useState("");
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [copied, setCopied] = useState(false);
+    const [urlError, setUrlError] = useState("");
 
     const handleCopy = () => {
         if (shortLink) {
@@ -42,6 +43,12 @@ export function HeroSection() {
             setTimeout(() => setCopied(false), 2000);
             toast.success("Link copied to clipboard!");
         }
+    };
+
+    // Function to validate URL
+    const isValidUrl = (url: string): boolean => {
+        // Check if URL has a valid domain and TLD pattern
+        return /^(https?:\/\/)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)$/.test(url);
     };
 
     return (
@@ -140,9 +147,18 @@ export function HeroSection() {
                                     onSubmit={async (e) => {
                                       e.preventDefault();
                                       setIsSubmitting(true);
+                                      setUrlError("");
+                                      
                                       try {
                                         const formData = new FormData(e.currentTarget);
                                         let url = formData.get("url") as string;
+                                        
+                                        // Validate URL
+                                        if (!isValidUrl(url)) {
+                                          setUrlError("Uncorrect URL, try again");
+                                          setIsSubmitting(false);
+                                          return;
+                                        }
                                         
                                         if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
                                           url = `https://${url}`;
@@ -197,6 +213,12 @@ export function HeroSection() {
                                         </Button>
                                       </div>
                                     </div>
+                                    
+                                    {urlError && (
+                                      <div className="mt-2 text-red-500 text-sm">
+                                        {urlError}
+                                      </div>
+                                    )}
                                     
                                     {shortLink && (
                                       <div className="mt-4 p-4 border border-border rounded-lg bg-transparent dark:border-gray-700 flex items-center justify-between">
@@ -292,7 +314,7 @@ export const HeroHeader = () => {
     return (
         <header>
             <nav
-                data-state={menuState && 'active'}
+                data-state={menuState ? 'active' : undefined}
                 className="fixed z-20 w-full px-2 group">
                 <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
                     <div className="relative flex flex-wrap items-center justify-between gap-6 py-3 lg:gap-0 lg:py-4">
