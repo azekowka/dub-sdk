@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useState, useRef } from 'react';
 import {
   Home,
+  LinkIcon as LucideLinkIcon,
   PanelLeft,
 } from 'lucide-react';
 import {
@@ -20,6 +21,7 @@ import { NavItem } from './nav-item';
 import { SearchInput } from './search';
 import { ThemeToggle } from '@/components/ui/theme-toggle';
 import { cn } from '@/lib/utils';
+import { LinkIcon as CustomLinkIcon } from '@/components/ui/linkIcon';
 
 export default function DashboardLayout({
   children
@@ -84,6 +86,27 @@ function DesktopNav({ expanded, setExpanded }: { expanded: boolean; setExpanded:
           <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-dashboard-icon lucide-layout-dashboard"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
         </ExpandableNavItem>
 
+        <ExpandableNavItem expanded={expanded} href="/dashboard/links" label="Links">
+          <LucideLinkIcon className="h-[22px] w-[22px]" />
+        </ExpandableNavItem>
+
+        <ExpandableNavItem expanded={expanded} href="/dashboard/links/new" label="Create a link">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M5 12h14" />
+            <path d="M12 5v14" />
+          </svg>
+        </ExpandableNavItem>
+
       </nav>
     </aside>
   );
@@ -143,6 +166,33 @@ function MobileNav() {
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-layout-dashboard-icon"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
             Dashboard
+          </Link>
+          <Link
+            href="/dashboard/links"
+            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+          >
+            <LucideLinkIcon className="h-[22px] w-[22px]" />
+            Links
+          </Link>
+          <Link
+            href="/dashboard/links/new"
+            className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            Create a link
           </Link>
         </nav>
       </SheetContent>
