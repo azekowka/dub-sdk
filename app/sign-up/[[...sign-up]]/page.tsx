@@ -44,9 +44,9 @@ export default function SignUpPage() {
             formFieldLabel: 'text-foreground',
             formFieldInput: 'bg-background border border-input',
             footerActionLink: 'text-primary hover:text-primary/90',
-            formButtonPrimary: 'bg-primary text-primary-foreground hover:bg-primary/90',
+            formButtonPrimary: theme === 'dark' ? 'bg-white text-black hover:bg-gray-100' : 'bg-black text-white hover:bg-black/90',
             footerAction: 'flex items-center justify-center gap-1',
-            footer: "hidden" //badge
+            footer: "hidden"
           },
         }}
         redirectUrl="/dashboard"
